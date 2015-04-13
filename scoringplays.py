@@ -20,9 +20,7 @@ def box_score(game_data):
 #function for getting alerts
 def scoring_plays(game_data,away_score,home_score):
 	game_url = 'http://gd2.mlb.com' + game_data + '/atv_runScoringPlays.xml'
-	
 	xml_str = urllib.urlopen(game_url).read()
-	
 	xmldoc = minidom.parseString(xml_str)
 	
 	if away_score or home_score > 0:
@@ -67,7 +65,6 @@ game_values = master_scoreboard_game(url_day)
 count = 0
 pre_count = 0
 game_count = 0
-current_inning = 0
 lastscore = ''
 scoreplay = ''
 for gameid in game_values:
@@ -110,14 +107,16 @@ for gameid in game_values:
 				lastscore = scoreplay
 				print str(away_score) + ' ' + gameid.attributes['away_name_abbrev'].value + ' @ ' + str(home_score) + ' ' + gameid.attributes['home_name_abbrev'].value
 
-
-			#inning_state = game_status[count].attributes['inning_state'].value
-			#inning = game_status[count].attributes['inning'].value
+			current_inning = status_values[count].attributes['inning'].value
+			inning_status = status_values[count].attributes['inning_state'].value
 			
-			#if inning_state == "End":
-			#	print inning_state
-			#	if game_status[count].attributes['inning'].value != current_inning:
-			#		print gameid.attributes['away_name_abbrev'].value + ' ' + str(away_score) + ' runs ' + away_hits + ' hits ' + away_errors + ' errors' 
+			if inning_status == "End":
+				if game_count != current_inning:
+					print 'End of Inning ' + current_inning
+					print gameid.attributes['away_name_abbrev'].value + ' :: ' + str(away_score) + ' Runs : ' + away_hits + ' Hits : ' + away_errors + ' Errors'
+					print gameid.attributes['home_name_abbrev'].value + ' :: ' + str(home_score) + ' Runs : ' + home_hits + ' Hits : ' + home_errors + ' Errors'
+					game_count = current_inning
+
 			time.sleep(30)
 			status_values = master_scoreboard_status(url_day)
 			game_status = status_values[count].attributes['status'].value
