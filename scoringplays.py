@@ -46,6 +46,15 @@ def master_scoreboard_status(url_day):
 
 	return (status_values)
 
+def starting_pitchers(url_day):
+	days_games = url_day + 'master_scoreboard.xml'
+	xml_masterscore = urllib.urlopen(days_games).read()
+	xmlscoreboard = minidom.parseString(xml_masterscore)
+	pitcher_values = xmlscoreboard.getElementsByTagName('pitcher')
+	opposing_pitcher_values = xmlscoreboard.getElementsByTagName('opposing_pitcher')
+
+	return pitcher_values,opposing_pitcher_values
+
 #get year
 year = (time.strftime("%Y"))
 #get two digit month
@@ -69,7 +78,7 @@ lastscore = ''
 scoreplay = ''
 for gameid in game_values:
 
-	if 'bos' in gameid.attributes['id'].value: 
+	if 'phi' in gameid.attributes['id'].value: 
 
 		status_values = master_scoreboard_status(url_day)
 		game_status = status_values[count].attributes['status'].value
@@ -84,10 +93,11 @@ for gameid in game_values:
 		pre_count = 0
 		while game_status == "Warmup":
 			if pre_count == 0:
+				(pitcher_values,opposing_pitcher_values) = starting_pitchers(url_day)
 				print 'Game start ' + gameid.attributes['away_name_abbrev'].value + ' @ ' + gameid.attributes['home_name_abbrev'].value
-				#print xmlscoreboard.getElementsByTagName('pitcher')[count].attributes['first'].value + ' ' + xmlscoreboard.getElementsByTagName('pitcher')[count].attributes['last'].value + ' ' + xmlscoreboard.getElementsByTagName('pitcher')[count].attributes['era'].value + 'ERA ' + xmlscoreboard.getElementsByTagName('pitcher')[count].attributes['wins'].value + '-' + xmlscoreboard.getElementsByTagName('pitcher')[count].attributes['losses'].value
-				#print 'VS'
-				#print xmlscoreboard.getElementsByTagName('opposing_pitcher')[count].attributes['first'].value + ' ' + xmlscoreboard.getElementsByTagName('opposing_pitcher')[count].attributes['last'].value
+				print pitcher_values[count].attributes['first'].value + ' ' + pitcher_values[count].attributes['last'].value + ' :: ' + pitcher_values[count].attributes['era'].value + ' ERA :' + pitcher_values[count].attributes['wins'].value + '-' + pitcher_values[count].attributes['losses'].value
+				print 'VS'
+				print opposing_pitcher_values[count].attributes['first'].value + ' ' + opposing_pitcher_values[count].attributes['last'].value + ' :: ' + opposing_pitcher_values[count].attributes['era'].value + ' ERA :' + opposing_pitcher_values[count].attributes['wins'].value + '-' + opposing_pitcher_values[count].attributes['losses'].value
 			pre_count +=1
 			time.sleep(30)
 			status_values = master_scoreboard_status(url_day)
