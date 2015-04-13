@@ -30,6 +30,7 @@ def scoring_plays(game_data,away_score,home_score):
 	else:
 		event = ''
 	return event
+
 #get values from game tag
 def master_scoreboard_game(url_day):
 	days_games = url_day + 'master_scoreboard.xml'
@@ -46,7 +47,6 @@ def master_scoreboard_status(url_day):
 	status_values = xmlscoreboard.getElementsByTagName('status')
 
 	return (status_values)
-#Get line score after end of inning
 
 #get year
 year = (time.strftime("%Y"))
@@ -63,7 +63,7 @@ url_day = 'http://gd2.mlb.com/components/game/mlb/year_' + year + '/month_' + mo
 game_values = master_scoreboard_game(url_day)
 
 #find game of particular team
-#print (game_values[1].attributes['id'].value)
+
 count = 0
 pre_count = 0
 game_count = 0
@@ -71,10 +71,9 @@ current_inning = 0
 lastscore = ''
 scoreplay = ''
 for gameid in game_values:
-	#print gameid.attributes['id'].value
-	#count +=1
+
 	if 'bos' in gameid.attributes['id'].value: 
-		#print gameid.attributes['id'].value
+
 		status_values = master_scoreboard_status(url_day)
 		game_status = status_values[count].attributes['status'].value
 		while game_status == "Pre-Game":
@@ -98,25 +97,27 @@ for gameid in game_values:
 			game_status = status_values[count].attributes['status'].value
 			pass
 		while game_status == "In Progress":
-			#if game_count == 0:
-				#
+
 			(away_score,home_score,away_hits,home_hits,away_errors,home_errors) = box_score(gameid.attributes['game_data_directory'].value)
 			away_score = int(away_score)
 			home_score = int(home_score)
+
 			if home_score or away_score > 0:
 				scoreplay = scoring_plays(gameid.attributes['game_data_directory'].value,away_score,home_score)
+
 			if scoreplay != lastscore:
 				print scoreplay
 				lastscore = scoreplay
 				print str(away_score) + ' ' + gameid.attributes['away_name_abbrev'].value + ' @ ' + str(home_score) + ' ' + gameid.attributes['home_name_abbrev'].value
-				#print xmlscoreboard.getElementsByTagName('r')[count].attributes['away'].value
-			inning_state = game_status[count].attributes['inning_state'].value
-			inning = game_status[count].attributes['inning'].value
-			#print inning_state
-			if inning_state == "End":
-				print inning_state
-				if game_status[count].attributes['inning'].value != current_inning:
-					print gameid.attributes['away_name_abbrev'].value + ' ' + str(away_score) + ' runs ' + away_hits + ' hits ' + away_errors + ' errors' 
+
+
+			#inning_state = game_status[count].attributes['inning_state'].value
+			#inning = game_status[count].attributes['inning'].value
+			
+			#if inning_state == "End":
+			#	print inning_state
+			#	if game_status[count].attributes['inning'].value != current_inning:
+			#		print gameid.attributes['away_name_abbrev'].value + ' ' + str(away_score) + ' runs ' + away_hits + ' hits ' + away_errors + ' errors' 
 			time.sleep(30)
 			status_values = master_scoreboard_status(url_day)
 			game_status = status_values[count].attributes['status'].value
