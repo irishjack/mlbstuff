@@ -1,6 +1,9 @@
+#!/usr/bin/env python
 from xml.dom import minidom
 import urllib
 import time
+#This gets the scoring plays, starting pitchers, and condensed linescore of one game.
+
 
 #Get Score
 def box_score(game_data):
@@ -121,7 +124,7 @@ for gameid in game_values:
 			inning_status = status_values[count].attributes['inning_state'].value
 			
 			if inning_status == "End":
-				if game_count != current_inning:
+				if game_count != current_inning and game_status != "Final":
 					print 'End of Inning ' + current_inning
 					print gameid.attributes['away_name_abbrev'].value + ' :: ' + str(away_score) + ' Runs : ' + away_hits + ' Hits : ' + away_errors + ' Errors'
 					print gameid.attributes['home_name_abbrev'].value + ' :: ' + str(home_score) + ' Runs : ' + home_hits + ' Hits : ' + home_errors + ' Errors'
@@ -131,5 +134,10 @@ for gameid in game_values:
 			status_values = master_scoreboard_status(url_day)
 			game_status = status_values[count].attributes['status'].value
 			pass
+		if game_status == "Final":
+			print "Final /" + game_count
+			print gameid.attributes['away_name_abbrev'].value + ' :: ' + str(away_score) + ' Runs : ' + away_hits + ' Hits : ' + away_errors + ' Errors'
+			print gameid.attributes['home_name_abbrev'].value + ' :: ' + str(home_score) + ' Runs : ' + home_hits + ' Hits : ' + home_errors + ' Errors'
+
 	count +=1
 		
