@@ -73,7 +73,7 @@ scoreplay = ''
 for gameid in game_values:
 	#print gameid.attributes['id'].value
 	#count +=1
-	if 'ari' in gameid.attributes['id'].value: 
+	if 'bos' in gameid.attributes['id'].value: 
 		#print gameid.attributes['id'].value
 		status_values = master_scoreboard_status(url_day)
 		game_status = status_values[count].attributes['status'].value
@@ -81,17 +81,21 @@ for gameid in game_values:
 			if pre_count == 1:
 				print gameid.attributes['away_name_abbrev'].value + ' @ ' + gameid.attributes['home_name_abbrev'].value +' start at ' + gameid.attributes['time'].value + ' ' + gameid.attributes['ampm'].value + ' ' + gameid.attributes['time_zone'].value
 			pre_count +=1
-			#time.sleep(30)
+			time.sleep(30)
+			status_values = master_scoreboard_status(url_day)
+			game_status = status_values[count].attributes['status'].value
 			pass
+		pre_count = 0
 		while game_status == "Warmup":
-			pre_count = 0
 			if pre_count == 0:
 				print 'Game start ' + gameid.attributes['away_name_abbrev'].value + ' @ ' + gameid.attributes['home_name_abbrev'].value
 				#print xmlscoreboard.getElementsByTagName('pitcher')[count].attributes['first'].value + ' ' + xmlscoreboard.getElementsByTagName('pitcher')[count].attributes['last'].value + ' ' + xmlscoreboard.getElementsByTagName('pitcher')[count].attributes['era'].value + 'ERA ' + xmlscoreboard.getElementsByTagName('pitcher')[count].attributes['wins'].value + '-' + xmlscoreboard.getElementsByTagName('pitcher')[count].attributes['losses'].value
 				#print 'VS'
 				#print xmlscoreboard.getElementsByTagName('opposing_pitcher')[count].attributes['first'].value + ' ' + xmlscoreboard.getElementsByTagName('opposing_pitcher')[count].attributes['last'].value
-			#time.sleep(30)
-			pre_count +=1			
+			pre_count +=1
+			time.sleep(30)
+			status_values = master_scoreboard_status(url_day)
+			game_status = status_values[count].attributes['status'].value
 			pass
 		while game_status == "In Progress":
 			#if game_count == 0:
@@ -113,7 +117,9 @@ for gameid in game_values:
 				print inning_state
 				if game_status[count].attributes['inning'].value != current_inning:
 					print gameid.attributes['away_name_abbrev'].value + ' ' + str(away_score) + ' runs ' + away_hits + ' hits ' + away_errors + ' errors' 
-			#time.sleep(30)
+			time.sleep(30)
+			status_values = master_scoreboard_status(url_day)
+			game_status = status_values[count].attributes['status'].value
 			pass
 	count +=1
 		
