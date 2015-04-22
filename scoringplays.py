@@ -81,7 +81,7 @@ lastscore = ''
 scoreplay = ''
 for gameid in game_values:
 
-	if 'phi' in gameid.attributes['id'].value: 
+	if 'cle' in gameid.attributes['id'].value: 
 
 		status_values = master_scoreboard_status(url_day)
 		game_status = status_values[count].attributes['status'].value
